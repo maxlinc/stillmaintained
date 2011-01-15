@@ -6,9 +6,11 @@ feature 'Homepage', %q{
   I want to have a nice homepage
 } do
 
-  context 'the homepage' do
+  describe 'the homepage' do
 
-    before do
+    background do
+      [User, Project].each { |model| model.delete_all }
+
       Project.make(
         :name => "project1",
         :state => 'maintained',
@@ -20,7 +22,7 @@ feature 'Homepage', %q{
 
     scenario "Visit the homepage" do
       visit '/'
-      page.should have_content 'Still Maintained?'
+      page.should.has_content? 'Still Maintained?'
     end
 
     scenario 'show every project in a list' do
@@ -28,8 +30,8 @@ feature 'Homepage', %q{
 
       visit '/'
 
-      page.should have_content "alice/project1"
-      page.should have_content "bob/project2"
+      page.should.has_content? "alice/project1"
+      page.should.has_content? "bob/project2"
     end
 
     scenario 'do not show any invisible projects' do
@@ -37,8 +39,8 @@ feature 'Homepage', %q{
 
       visit '/'
 
-      page.should have_content "alice/project1"
-      page.should have_no_content "bob/project2"
+      page.should.has_content? "alice/project1"
+      page.should.has_no_content? "bob/project2"
     end
 
     scenario 'do not show any forks' do
@@ -46,14 +48,14 @@ feature 'Homepage', %q{
 
       visit '/'
 
-      page.should have_content "alice/project1"
-      page.should have_no_content "bob/project2"
+      page.should.has_content? "alice/project1"
+      page.should.has_no_content? "bob/project2"
     end
 
     scenario 'show the project descriptions' do
       visit '/'
 
-      page.should have_content 'project1 description'
+      page.should.has_content? 'project1 description'
     end
 
     scenario 'click on a project name' do
@@ -61,14 +63,14 @@ feature 'Homepage', %q{
 
       click_link 'project1'
 
-      page.should have_content 'project1 is still being maintained'
+      page.should.has_content? 'project1 is still being maintained'
     end
 
     scenario 'click the "show all projects" link' do
       visit '/'
       click_link 'show all projects'
 
-      page.should have_content '1 projects'
+      page.should.has_content? '1 projects'
     end
 
     scenario 'search a project' do
@@ -76,7 +78,7 @@ feature 'Homepage', %q{
 
       fill_in 'q', :with => 'project1'
       click_button 'Search'
-      page.should have_content '1 projects'
+      page.should.has_content? '1 projects'
     end
 
   end

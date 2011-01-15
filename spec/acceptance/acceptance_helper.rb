@@ -1,13 +1,18 @@
 require File.dirname(__FILE__) + "/../spec_helper"
-require "steak"
 require 'capybara'
 require 'capybara/dsl'
 require 'fakeweb'
 
-Rspec.configure do |config|
-  config.include Capybara
-  Capybara.app = Application
+module Bacon
+  class Context
+    include Capybara
+    Capybara.app = Application
+
+    alias_method :scenario, :it
+    alias_method :background, :before
+  end
 end
 
-# Put your acceptance spec helpers inside /spec/acceptance/support
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
+module Kernel
+  alias_method :feature, :describe
+end

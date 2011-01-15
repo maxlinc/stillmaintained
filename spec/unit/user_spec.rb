@@ -1,8 +1,8 @@
-require 'spec_helper'
+require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe User do
   it 'should create a new user' do
-    lambda { User.create }.should change(User, :count).by(1)
+    lambda { User.create }.should.change { User.count }
   end
 
   describe '#organizations' do

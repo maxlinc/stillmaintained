@@ -1,8 +1,12 @@
-require 'spec_helper'
+require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Project do
+  before do
+    [User, Project].each { |model| model.delete_all }
+  end
+
   it 'should create a new Project' do
-    lambda { Project.create }.should change(Project, :count).by(1)
+    lambda { Project.create }.should.change { Project.count }
   end
 
   describe 'search' do
@@ -13,25 +17,25 @@ describe Project do
 
     it 'should find project by name' do
       results = Project.search('project2')
-      results.should include(@project1)
-      results.should_not include(@project2)
+      results.should.include(@project1)
+      results.should.not.include(@project2)
 
       results = Project.search('PROJECT2')
-      results.should include(@project1)
-      results.should_not include(@project2)
+      results.should.include(@project1)
+      results.should.not.include(@project2)
 
 
       results = Project.search('project')
-      results.should include(@project1)
-      results.should include(@project2)
+      results.should.include(@project1)
+      results.should.include(@project2)
 
       results = Project.search('proj')
-      results.should include(@project1)
-      results.should include(@project2)
+      results.should.include(@project1)
+      results.should.include(@project2)
 
       results = Project.search('ject')
-      results.should include(@project1)
-      results.should include(@project2)
+      results.should.include(@project1)
+      results.should.include(@project2)
     end
   end
 
@@ -44,7 +48,7 @@ describe Project do
           Project.create_or_update_from_github_response({
             'owner' => 'alice', 'name' => 'project1'
           })
-        }.should change(Project, :count).by(1)
+        }.should.change { Project.count }
       end
 
       it 'should save the user and project names' do
@@ -80,7 +84,7 @@ describe Project do
         end
 
         it 'should set the fork boolean' do
-          @project.fork.should be_true
+          @project.fork.should == true
         end
 
         it 'should store the source' do
@@ -104,7 +108,7 @@ describe Project do
           Project.create_or_update_from_github_response({
             'owner' => 'alice', 'name' => 'project1'
           })
-        }.should_not change(Project, :count)
+        }.should.not.change { Project.count }
       end
 
       it 'should update the extra data from github' do
@@ -133,13 +137,13 @@ describe Project do
     end
 
     it 'should not return any forked projects' do
-      Project.no_forks.should_not include @projects[0]
+      Project.no_forks.should.not.include @projects[0]
     end
 
     it 'should return any projects where fork == nil' do
       projects = Project.no_forks
-      projects.should include @projects[1]
-      projects.should include @projects[2]
+      projects.should.include @projects[1]
+      projects.should.include @projects[2]
     end
   end
 
